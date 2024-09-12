@@ -1,6 +1,7 @@
 #include "lexer.h"
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 bs_lexer_t* bs_lexer_create(const char* code) {
@@ -41,14 +42,45 @@ static bs_token_t* bs_lexer_parse_id(bs_lexer_t* lexer) {
   return token;
 }
 
-static bs_token_t* bs_lexer_parse_int(bs_lexer_t* lexer) {
-  // TODO: Allow parsing hex, binary, etc.
-  // TODO: Allow parsing floats
+
+// Parse either an int or a float
+static bs_token_t* bs_lexer_parse_number(bs_lexer_t* lexer) {
   bs_token_t* token = bs_token_create(BS_TOKEN_INT, lexer->ptr, 0);
-  while (isdigit(lexer->ptr[0])) {
+  bool decimalpointfound = false;
+  while (isalnum(lexer->ptr[0]) || lexer->ptr[0] == '.') {
+    if (lexer->ptr[0] == '.') {
+      decimalpointfound = true;
+    }
     lexer->ptr++;
   };
+  if (decimalpointfound) {
+    token->type = BS_TOKEN_FLOAT;
+  }
   token->length = lexer->ptr - token->value;
+  return token;
+}
+
+// Parse either = or ==
+static bs_token_t* bs_lexer_parse_equals(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_EQUALS, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_DOUBLEEQUALS;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
+// Parse either ! or !=
+static bs_token_t* bs_lexer_parse_not(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_NOT, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_NOTEQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
   return token;
 }
 
@@ -63,10 +95,21 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
 
   // Single character tokens
   switch (lexer->ptr[0]) {
-    case '=': token = bs_token_create(BS_TOKEN_EQUALS,    lexer->ptr, 1); lexer->ptr++; return token;
-    case ';': token = bs_token_create(BS_TOKEN_SEMICOLON, lexer->ptr, 1); lexer->ptr++; return token;
-    case '(': token = bs_token_create(BS_TOKEN_LPAREN,    lexer->ptr, 1); lexer->ptr++; return token;
-    case ')': token = bs_token_create(BS_TOKEN_RPAREN,    lexer->ptr, 1); lexer->ptr++; return token;
+    case '+': token = bs_token_create(BS_TOKEN_PLUS,          lexer->ptr, 1); lexer->ptr++; return token;
+    case '-': token = bs_token_create(BS_TOKEN_MINUS,         lexer->ptr, 1); lexer->ptr++; return token;
+    case '/': token = bs_token_create(BS_TOKEN_DIVIDE,        lexer->ptr, 1); lexer->ptr++; return token;
+    case '*': token = bs_token_create(BS_TOKEN_MULTIPLY,      lexer->ptr, 1); lexer->ptr++; return token;
+    case '%': token = bs_token_create(BS_TOKEN_MODULO,        lexer->ptr, 1); lexer->ptr++; return token;
+    case '.': token = bs_token_create(BS_TOKEN_POINT,         lexer->ptr, 1); lexer->ptr++; return token;
+    case ';': token = bs_token_create(BS_TOKEN_SEMICOLON,     lexer->ptr, 1); lexer->ptr++; return token;
+    case '(': token = bs_token_create(BS_TOKEN_LPAREN,        lexer->ptr, 1); lexer->ptr++; return token;
+    case ')': token = bs_token_create(BS_TOKEN_RPAREN,        lexer->ptr, 1); lexer->ptr++; return token;
+    case '[': token = bs_token_create(BS_TOKEN_LSQBRACKET,    lexer->ptr, 1); lexer->ptr++; return token;
+    case ']': token = bs_token_create(BS_TOKEN_RSQBRACKET,    lexer->ptr, 1); lexer->ptr++; return token;
+    case '<': token = bs_token_create(BS_TOKEN_LANGLEBRACKET, lexer->ptr, 1); lexer->ptr++; return token;
+    case '>': token = bs_token_create(BS_TOKEN_RANGLEBRACKET, lexer->ptr, 1); lexer->ptr++; return token;
+    case '{': token = bs_token_create(BS_TOKEN_LCURLYBRACE,   lexer->ptr, 1); lexer->ptr++; return token;
+    case '}': token = bs_token_create(BS_TOKEN_RCURLYBRACE,   lexer->ptr, 1); lexer->ptr++; return token;
   }
 
   // Multi character tokens
@@ -77,7 +120,13 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
     token = bs_lexer_parse_id(lexer);
   }
   else if (isdigit(lexer->ptr[0])) {
-    token = bs_lexer_parse_int(lexer);
+    token = bs_lexer_parse_number(lexer);
+  }
+  else if (lexer->ptr[0] == '=') {
+    token = bs_lexer_parse_equals(lexer);
+  }
+  else if (lexer->ptr[0] == '!') {
+    token = bs_lexer_parse_not(lexer);
   }
 
   return token;
