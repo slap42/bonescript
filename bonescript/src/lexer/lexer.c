@@ -22,10 +22,10 @@ static void bs_lexer_skip_whitespace(bs_lexer_t* lexer) {
 }
 
 static bs_token_t* bs_lexer_parse_string(bs_lexer_t* lexer) {
+  char string_delimiter = lexer->ptr[0];
   lexer->ptr++;
   bs_token_t* token = bs_token_create(BS_TOKEN_STRING, lexer->ptr, 0);
-  // TODO: allow \" in strings
-  while (lexer->ptr[0] != '"') {
+  while (lexer->ptr[0] != string_delimiter && (lexer->ptr-1)[0] != '\\') {
     lexer->ptr++;
   };
   token->length = lexer->ptr - token->value;
@@ -62,10 +62,10 @@ static bs_token_t* bs_lexer_parse_number(bs_lexer_t* lexer) {
 
 // Parse either = or ==
 static bs_token_t* bs_lexer_parse_equals(bs_lexer_t* lexer) {
-  bs_token_t* token = bs_token_create(BS_TOKEN_EQUALS, lexer->ptr, 1);
+  bs_token_t* token = bs_token_create(BS_TOKEN_EQUAL, lexer->ptr, 1);
   lexer->ptr++;
   if (lexer->ptr[0] == '=') {
-    token->type = BS_TOKEN_DOUBLEEQUALS;
+    token->type = BS_TOKEN_DOUBLEEQUAL;
     token->length = 2;
     lexer->ptr++; 
   }
@@ -84,10 +84,79 @@ static bs_token_t* bs_lexer_parse_not(bs_lexer_t* lexer) {
   return token;
 }
 
+// Parse either +, ++ or +=
+static bs_token_t* bs_lexer_parse_plus(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_PLUS, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '+') {
+    token->type = BS_TOKEN_PLUSPLUS;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  else if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_PLUSEQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
+// Parse either -, -- or -=
+static bs_token_t* bs_lexer_parse_minus(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_MINUS, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '-') {
+    token->type = BS_TOKEN_MINUSMINUS;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  else if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_MINUSEQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
+// Parse either * or *=
+static bs_token_t* bs_lexer_parse_multiply(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_MULTIPLY, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_MULTIPLYEQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
+// Parse either / or /=
+static bs_token_t* bs_lexer_parse_divide(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_DIVIDE, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_DIVIDEEQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
+// Parse either % or %=
+static bs_token_t* bs_lexer_parse_modulo(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_MODULO, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_MODULOEQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
 bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
   bs_lexer_skip_whitespace(lexer);
-  
-  if (lexer->ptr[0] == '\0') {
+  if (lexer->ptr[0] == '\0' || !isascii(lexer->ptr[0])) {
     return NULL;
   }
   
@@ -95,11 +164,6 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
 
   // Single character tokens
   switch (lexer->ptr[0]) {
-    case '+': token = bs_token_create(BS_TOKEN_PLUS,          lexer->ptr, 1); lexer->ptr++; return token;
-    case '-': token = bs_token_create(BS_TOKEN_MINUS,         lexer->ptr, 1); lexer->ptr++; return token;
-    case '/': token = bs_token_create(BS_TOKEN_DIVIDE,        lexer->ptr, 1); lexer->ptr++; return token;
-    case '*': token = bs_token_create(BS_TOKEN_MULTIPLY,      lexer->ptr, 1); lexer->ptr++; return token;
-    case '%': token = bs_token_create(BS_TOKEN_MODULO,        lexer->ptr, 1); lexer->ptr++; return token;
     case '.': token = bs_token_create(BS_TOKEN_POINT,         lexer->ptr, 1); lexer->ptr++; return token;
     case ';': token = bs_token_create(BS_TOKEN_SEMICOLON,     lexer->ptr, 1); lexer->ptr++; return token;
     case '(': token = bs_token_create(BS_TOKEN_LPAREN,        lexer->ptr, 1); lexer->ptr++; return token;
@@ -113,7 +177,7 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
   }
 
   // Multi character tokens
-  if (lexer->ptr[0] == '"') {
+  if (lexer->ptr[0] == '"' || lexer->ptr[0] == '\'') {
     token = bs_lexer_parse_string(lexer);
   }
   else if (isalpha(lexer->ptr[0])) {
@@ -127,6 +191,21 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
   }
   else if (lexer->ptr[0] == '!') {
     token = bs_lexer_parse_not(lexer);
+  }
+  else if (lexer->ptr[0] == '+') {
+    token = bs_lexer_parse_plus(lexer);
+  }
+  else if (lexer->ptr[0] == '-') {
+    token = bs_lexer_parse_minus(lexer);
+  }
+  else if (lexer->ptr[0] == '*') {
+    token = bs_lexer_parse_multiply(lexer);
+  }
+  else if (lexer->ptr[0] == '/') {
+    token = bs_lexer_parse_divide(lexer);
+  }
+  else if (lexer->ptr[0] == '%') {
+    token = bs_lexer_parse_modulo(lexer);
   }
 
   return token;
