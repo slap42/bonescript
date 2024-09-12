@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <lexer/lexer.h>
+#include <bonescript/lexer/lexer.h>
 
 static char* load_file(const char* path) {
   FILE* file = fopen(path, "rb");
@@ -31,11 +31,11 @@ static void test_lexer() {
   free(code);
 }
 
-static void error_callback(int error_code, const char* error_string) {
-
+static void error_callback(bs_error_t error_code, const char* error_string) {
+  fprintf(stderr, "Bonescript error: %s\n", error_string);
 }
 
 void main() {
-  bs_set_error_callback(error_callback);
+  bs_error_set_callback(error_callback);
   test_lexer();
 }

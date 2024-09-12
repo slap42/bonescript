@@ -1,4 +1,4 @@
-#include "token.h"
+#include "bonescript/lexer/token.h"
 
 #include <stdlib.h>
 

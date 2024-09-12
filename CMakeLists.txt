@@ -4,32 +4,40 @@ project(Bonescript)
 # bonescript
 set(BONESCRIPT_INCLUDE_FILES
   bonescript/include/bonescript/bonescript.h
+  bonescript/include/bonescript/error.h
 )
-source_group("include" FILES ${BONESCRIPT_INCLUDE_FILES})
+source_group("include/bonescript" FILES ${BONESCRIPT_INCLUDE_FILES})
 
 set(BONESCRIPT_SRC_FILES
-  bonescript/src/bonescript.c
+  bonescript/src/bonescript/bonescript.c
 )
-source_group("src" FILES ${BONESCRIPT_SRC_FILES})
+source_group("src/bonescript" FILES ${BONESCRIPT_SRC_FILES})
 
 set(BONESCRIPT_SRC_LEXER_FILES
-  bonescript/src/lexer/lexer.h
-  bonescript/src/lexer/lexer.c
-  bonescript/src/lexer/token.h
-  bonescript/src/lexer/token.c
+  bonescript/src/bonescript/lexer/lexer.h
+  bonescript/src/bonescript/lexer/lexer.c
+  bonescript/src/bonescript/lexer/token.h
+  bonescript/src/bonescript/lexer/token.c
 )
-source_group("src/lexer" FILES ${BONESCRIPT_SRC_LEXER_FILES})
+source_group("src/bonescript/lexer" FILES ${BONESCRIPT_SRC_LEXER_FILES})
 
 set(BONESCRIPT_SRC_AST_FILES
-  bonescript/src/ast/ast.h
+  bonescript/src/bonescript/ast/ast.h
 )
-source_group("src/ast" FILES ${BONESCRIPT_SRC_AST_FILES})
+source_group("src/bonescript/ast" FILES ${BONESCRIPT_SRC_AST_FILES})
+
+set(BONESCRIPT_SRC_ERROR_FILES
+  bonescript/src/bonescript/error/error_internal.h
+  bonescript/src/bonescript/error/error.c
+)
+source_group("src/bonescript/error" FILES ${BONESCRIPT_SRC_ERROR_FILES})
 
 set(BONESCRIPT_FILES
   ${BONESCRIPT_INCLUDE_FILES}
   ${BONESCRIPT_SRC_FILES}
   ${BONESCRIPT_SRC_LEXER_FILES}
   ${BONESCRIPT_SRC_AST_FILES}
+  ${BONESCRIPT_SRC_ERROR_FILES}
 )
 
 add_library(bonescript ${BONESCRIPT_FILES})

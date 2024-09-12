@@ -1,8 +1,9 @@
-#include "lexer.h"
+#include "bonescript/lexer/lexer.h"
 
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "bonescript/error/error_internal.h"
 
 bs_lexer_t* bs_lexer_create(const char* code) {
   bs_lexer_t* lexer = malloc(sizeof(bs_lexer_t));
@@ -84,6 +85,30 @@ static bs_token_t* bs_lexer_parse_not(bs_lexer_t* lexer) {
   return token;
 }
 
+// Parse either < or <=
+static bs_token_t* bs_lexer_parse_langlebracket(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_LANGLEBRACKET, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_LESSOREQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
+// Parse either > or >=
+static bs_token_t* bs_lexer_parse_ranglebracket(bs_lexer_t* lexer) {
+  bs_token_t* token = bs_token_create(BS_TOKEN_RANGLEBRACKET, lexer->ptr, 1);
+  lexer->ptr++;
+  if (lexer->ptr[0] == '=') {
+    token->type = BS_TOKEN_GREATEROREQUAL;
+    token->length = 2;
+    lexer->ptr++; 
+  }
+  return token;
+}
+
 // Parse either +, ++ or +=
 static bs_token_t* bs_lexer_parse_plus(bs_lexer_t* lexer) {
   bs_token_t* token = bs_token_create(BS_TOKEN_PLUS, lexer->ptr, 1);
@@ -159,54 +184,60 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
   if (lexer->ptr[0] == '\0' || !isascii(lexer->ptr[0])) {
     return NULL;
   }
-  
-  bs_token_t* token;
 
   // Single character tokens
   switch (lexer->ptr[0]) {
-    case '.': token = bs_token_create(BS_TOKEN_POINT,         lexer->ptr, 1); lexer->ptr++; return token;
-    case ';': token = bs_token_create(BS_TOKEN_SEMICOLON,     lexer->ptr, 1); lexer->ptr++; return token;
-    case '(': token = bs_token_create(BS_TOKEN_LPAREN,        lexer->ptr, 1); lexer->ptr++; return token;
-    case ')': token = bs_token_create(BS_TOKEN_RPAREN,        lexer->ptr, 1); lexer->ptr++; return token;
-    case '[': token = bs_token_create(BS_TOKEN_LSQBRACKET,    lexer->ptr, 1); lexer->ptr++; return token;
-    case ']': token = bs_token_create(BS_TOKEN_RSQBRACKET,    lexer->ptr, 1); lexer->ptr++; return token;
-    case '<': token = bs_token_create(BS_TOKEN_LANGLEBRACKET, lexer->ptr, 1); lexer->ptr++; return token;
-    case '>': token = bs_token_create(BS_TOKEN_RANGLEBRACKET, lexer->ptr, 1); lexer->ptr++; return token;
-    case '{': token = bs_token_create(BS_TOKEN_LCURLYBRACE,   lexer->ptr, 1); lexer->ptr++; return token;
-    case '}': token = bs_token_create(BS_TOKEN_RCURLYBRACE,   lexer->ptr, 1); lexer->ptr++; return token;
+    case '.': lexer->ptr++; return bs_token_create(BS_TOKEN_POINT,         lexer->ptr - 1, 1);
+    case ';': lexer->ptr++; return bs_token_create(BS_TOKEN_SEMICOLON,     lexer->ptr - 1, 1);
+    case '^': lexer->ptr++; return bs_token_create(BS_TOKEN_CARET,         lexer->ptr - 1, 1);
+    case '(': lexer->ptr++; return bs_token_create(BS_TOKEN_LPAREN,        lexer->ptr - 1, 1);
+    case ')': lexer->ptr++; return bs_token_create(BS_TOKEN_RPAREN,        lexer->ptr - 1, 1);
+    case '[': lexer->ptr++; return bs_token_create(BS_TOKEN_LSQBRACKET,    lexer->ptr - 1, 1);
+    case ']': lexer->ptr++; return bs_token_create(BS_TOKEN_RSQBRACKET,    lexer->ptr - 1, 1);
+    case '{': lexer->ptr++; return bs_token_create(BS_TOKEN_LCURLYBRACE,   lexer->ptr - 1, 1);
+    case '}': lexer->ptr++; return bs_token_create(BS_TOKEN_RCURLYBRACE,   lexer->ptr - 1, 1);
   }
 
   // Multi character tokens
   if (lexer->ptr[0] == '"' || lexer->ptr[0] == '\'') {
-    token = bs_lexer_parse_string(lexer);
+    return bs_lexer_parse_string(lexer);
   }
   else if (isalpha(lexer->ptr[0])) {
-    token = bs_lexer_parse_id(lexer);
+    return bs_lexer_parse_id(lexer);
   }
   else if (isdigit(lexer->ptr[0])) {
-    token = bs_lexer_parse_number(lexer);
+    return bs_lexer_parse_number(lexer);
   }
   else if (lexer->ptr[0] == '=') {
-    token = bs_lexer_parse_equals(lexer);
+    return bs_lexer_parse_equals(lexer);
+  }
+  else if (lexer->ptr[0] == '<') {
+    return bs_lexer_parse_langlebracket(lexer);
+  }
+  else if (lexer->ptr[0] == '>') {
+    return bs_lexer_parse_ranglebracket(lexer);
   }
   else if (lexer->ptr[0] == '!') {
-    token = bs_lexer_parse_not(lexer);
+    return bs_lexer_parse_not(lexer);
   }
   else if (lexer->ptr[0] == '+') {
-    token = bs_lexer_parse_plus(lexer);
+    return bs_lexer_parse_plus(lexer);
   }
   else if (lexer->ptr[0] == '-') {
-    token = bs_lexer_parse_minus(lexer);
+    return bs_lexer_parse_minus(lexer);
   }
   else if (lexer->ptr[0] == '*') {
-    token = bs_lexer_parse_multiply(lexer);
+    return bs_lexer_parse_multiply(lexer);
   }
   else if (lexer->ptr[0] == '/') {
-    token = bs_lexer_parse_divide(lexer);
+    return bs_lexer_parse_divide(lexer);
   }
   else if (lexer->ptr[0] == '%') {
-    token = bs_lexer_parse_modulo(lexer);
+    return bs_lexer_parse_modulo(lexer);
   }
-
-  return token;
+  // Handle unrecognized tokens
+  else {
+    bs_error_invoke_callback(BS_ERROR_UNRECOGNIZED_TOKEN, "Unrecognized token");
+    return NULL;
+  }
 }

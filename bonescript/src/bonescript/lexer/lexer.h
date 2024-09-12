@@ -1,7 +1,7 @@
 #ifndef BONESCRIPT_LEXER_H_
 #define BONESCRIPT_LEXER_H_
 
-#include "token.h"
+#include "bonescript/lexer/token.h"
 
 typedef struct BS_LEXER_STRUCT {
   const char* code;
