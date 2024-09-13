@@ -23,6 +23,9 @@ source_group("src/bonescript/lexer" FILES ${BONESCRIPT_SRC_LEXER_FILES})
 
 set(BONESCRIPT_SRC_AST_FILES
   bonescript/src/bonescript/ast/ast.h
+  bonescript/src/bonescript/ast/ast.c
+  bonescript/src/bonescript/ast/parser.h
+  bonescript/src/bonescript/ast/parser.c
 )
 source_group("src/bonescript/ast" FILES ${BONESCRIPT_SRC_AST_FILES})
 
@@ -53,6 +56,7 @@ source_group("src" FILES ${BONESCRIPT_TESTS_FILES})
 set(BONESCRIPT_TESTS_CODE_FILES
   bonescript-tests/code/print.bs
   bonescript-tests/code/test-lexer.bs
+  bonescript-tests/code/test-parser.bs
 )
 source_group("code" FILES ${BONESCRIPT_TESTS_CODE_FILES})
 set_source_files_properties(${BONESCRIPT_TESTS_CODE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)

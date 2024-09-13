@@ -3,7 +3,7 @@
 
 typedef struct BS_TOKEN_STRUCT {
 
-  enum {
+  enum BS_TOKEN_TYPE {
     BS_TOKEN_ID,
     BS_TOKEN_EQUAL,
     BS_TOKEN_DOUBLEEQUAL,

@@ -1,0 +1,3 @@
+string name = "Charles Cheese";
+
+print(name);
