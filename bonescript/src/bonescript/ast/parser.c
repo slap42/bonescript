@@ -59,19 +59,26 @@ static bs_ast_t* bs_parse_function_call(bs_parser_t* parser) {
   bs_ast_t* ast = bs_ast_create(BS_AST_FUNCTION_CALL);
   ast->function_call.name = parser->previous_token->value;
   ast->function_call.name_length = parser->previous_token->length;
+  ast->function_call.args = NULL;
+  ast->function_call.args_count = 0;
+  
   bs_parser_eat(parser, BS_TOKEN_LPAREN);
   
-  if (parser->current_token->type != BS_TOKEN_COMMA && parser->current_token->type != BS_TOKEN_RPAREN) {
-    ast->function_call.args_count = 1;
-    ast->function_call.args = malloc(sizeof(bs_ast_t*));
-    ast->function_call.args[0] = bs_parse_expression(parser);
+  // Handle the case where the function has no args
+  if (parser->current_token->type == BS_TOKEN_RPAREN) {
+    bs_parser_eat(parser, BS_TOKEN_RPAREN);
+    return ast;
   }
-  while (parser->current_token->type == BS_TOKEN_COMMA) {
-    bs_parser_eat(parser, BS_TOKEN_COMMA);
+  
+  // Parse args
+  do {
+    if (parser->current_token->type == BS_TOKEN_COMMA) {
+      bs_parser_eat(parser, BS_TOKEN_COMMA);
+    }
     ast->function_call.args_count++;
     ast->function_call.args = realloc(ast->function_call.args, sizeof(bs_ast_t*) * ast->function_call.args_count);
     ast->function_call.args[ast->function_call.args_count - 1] = bs_parse_expression(parser);
-  }
+  } while (parser->current_token->type == BS_TOKEN_COMMA);
   bs_parser_eat(parser, BS_TOKEN_RPAREN);
   
   return ast;
@@ -105,19 +112,15 @@ static bs_ast_t* bs_parse_id(bs_parser_t* parser) {
 
 static bs_ast_t* bs_parse_compound(bs_parser_t* parser) {
   bs_ast_t* ast = bs_ast_create(BS_AST_COMPOUND);
+  ast->compound.size = 0;
+  ast->compound.value = NULL;
   
-  if (parser->current_token && parser->current_token->type != BS_TOKEN_SEMICOLON) {
-    ast->compound.size++;
-    ast->compound.value = malloc(sizeof(bs_ast_t*));
-    ast->compound.value[ast->compound.size - 1] = bs_parse_expression(parser);
-    bs_parser_eat(parser, BS_TOKEN_SEMICOLON);
-  }
-  while (parser->current_token && parser->current_token->type != BS_TOKEN_SEMICOLON) {
+  do {
     ast->compound.size++;
     ast->compound.value = realloc(ast->compound.value, sizeof(bs_ast_t*) * ast->compound.size);
     ast->compound.value[ast->compound.size - 1] = bs_parse_expression(parser);
     bs_parser_eat(parser, BS_TOKEN_SEMICOLON);
-  }
+  } while (parser->current_token && parser->current_token->type != BS_TOKEN_SEMICOLON);
 
   return ast;
 }

@@ -31,6 +31,8 @@ void bs_ast_destroy(bs_ast_t* ast) {
       bs_ast_destroy(ast->variable_definition.value);
       break;
     }
+      
+    default: break;
 
   }
 
