@@ -1,4 +1,4 @@
-#include "bonescript/ast/print_ast.h"
+#include "print_ast.h"
 
 #include <stdbool.h>
 #include <stdio.h>

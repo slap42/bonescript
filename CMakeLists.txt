@@ -24,8 +24,6 @@ source_group("src/bonescript/lexer" FILES ${BONESCRIPT_SRC_LEXER_FILES})
 set(BONESCRIPT_SRC_AST_FILES
   bonescript/src/bonescript/ast/ast.h
   bonescript/src/bonescript/ast/ast.c
-  bonescript/src/bonescript/ast/print_ast.h
-  bonescript/src/bonescript/ast/print_ast.c
   bonescript/src/bonescript/ast/parser.h
   bonescript/src/bonescript/ast/parser.c
 )
@@ -51,9 +49,15 @@ target_include_directories(bonescript PRIVATE bonescript/src)
 
 # bonescript-tests
 set(BONESCRIPT_TESTS_FILES
-bonescript-tests/src/main.c
+  bonescript-tests/src/main.c
 )
 source_group("src" FILES ${BONESCRIPT_TESTS_FILES})
+
+set(BONESCRIPT_TESTS_UTILS_FILES
+  bonescript-tests/src/utils/print_ast.h
+  bonescript-tests/src/utils/print_ast.c
+)
+source_group("src/utils" FILES ${BONESCRIPT_TESTS_UTILS_FILES})
 
 set(BONESCRIPT_TESTS_CODE_FILES
   bonescript-tests/code/print.bs
@@ -63,7 +67,7 @@ set(BONESCRIPT_TESTS_CODE_FILES
 source_group("code" FILES ${BONESCRIPT_TESTS_CODE_FILES})
 set_source_files_properties(${BONESCRIPT_TESTS_CODE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
-add_executable(bonescript-tests ${BONESCRIPT_TESTS_FILES} ${BONESCRIPT_TESTS_CODE_FILES})
+add_executable(bonescript-tests ${BONESCRIPT_TESTS_FILES} ${BONESCRIPT_TESTS_UTILS_FILES} ${BONESCRIPT_TESTS_CODE_FILES})
 target_link_libraries(bonescript-tests PRIVATE bonescript)
 target_include_directories(bonescript-tests PRIVATE bonescript/src)
 if(APPLE)

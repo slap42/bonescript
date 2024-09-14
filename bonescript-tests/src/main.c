@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <bonescript/ast/parser.h>
-#include <bonescript/ast/print_ast.h>
 #include <bonescript/lexer/lexer.h>
+#include "utils/print_ast.h"
 
 static char* load_file(const char* path) {
   FILE* file = fopen(path, "rb");
