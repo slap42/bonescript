@@ -36,7 +36,7 @@ static bs_token_t* bs_lexer_parse_string(bs_lexer_t* lexer) {
 
 static bs_token_t* bs_lexer_parse_id(bs_lexer_t* lexer) {
   bs_token_t* token = bs_token_create(BS_TOKEN_ID, lexer->ptr, 0);
-  while (isalnum(lexer->ptr[0])) {
+  while (isalnum(lexer->ptr[0]) || lexer->ptr[0] == '_') {
     lexer->ptr++;
   };
   token->length = lexer->ptr - token->value;
@@ -204,7 +204,7 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
   if (lexer->ptr[0] == '"' || lexer->ptr[0] == '\'') {
     return bs_lexer_parse_string(lexer);
   }
-  else if (isalpha(lexer->ptr[0])) {
+  else if (isalpha(lexer->ptr[0]) || lexer->ptr[0] == '_') {
     return bs_lexer_parse_id(lexer);
   }
   else if (isdigit(lexer->ptr[0])) {
