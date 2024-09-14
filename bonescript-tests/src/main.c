@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <bonescript/ast/parser.h>
 #include <bonescript/lexer/lexer.h>
+#include <bonescript/visitor/visitor.h>
 #include "utils/print_ast.h"
 
 static char* load_file(const char* path) {
@@ -36,8 +37,14 @@ static void test_lexer() {
 static void test_parser() {
   char* code = load_file("code/test-parser.bs");
   bs_ast_t* ast = bs_parse_tokens(code);
-  bs_ast_print(ast);
+  // bs_ast_print(ast);
   bs_ast_destroy(ast);
+  free(code);
+}
+
+static void test_visitor() {
+  char* code = load_file("code/test-parser.bs");
+  bs_run_interpreted(code);
   free(code);
 }
 
@@ -50,6 +57,6 @@ int main() {
   bs_error_set_callback(error_callback);
   test_lexer();
   test_parser();
-  
+  test_visitor();
   return 0;
 }

@@ -29,6 +29,12 @@ set(BONESCRIPT_SRC_AST_FILES
 )
 source_group("src/bonescript/ast" FILES ${BONESCRIPT_SRC_AST_FILES})
 
+set(BONESCRIPT_SRC_VISITOR_FILES
+  bonescript/src/bonescript/visitor/visitor.h
+  bonescript/src/bonescript/visitor/visitor.c
+)
+source_group("src/bonescript/visitor" FILES ${BONESCRIPT_SRC_VISITOR_FILES})
+
 set(BONESCRIPT_SRC_ERROR_FILES
   bonescript/src/bonescript/error/error_internal.h
   bonescript/src/bonescript/error/error.c
@@ -40,6 +46,7 @@ set(BONESCRIPT_FILES
   ${BONESCRIPT_SRC_FILES}
   ${BONESCRIPT_SRC_LEXER_FILES}
   ${BONESCRIPT_SRC_AST_FILES}
+  ${BONESCRIPT_SRC_VISITOR_FILES}
   ${BONESCRIPT_SRC_ERROR_FILES}
 )
 
