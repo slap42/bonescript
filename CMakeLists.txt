@@ -32,6 +32,10 @@ source_group("src/bonescript/ast" FILES ${BONESCRIPT_SRC_AST_FILES})
 set(BONESCRIPT_SRC_VISITOR_FILES
   bonescript/src/bonescript/visitor/visitor.h
   bonescript/src/bonescript/visitor/visitor.c
+  bonescript/src/bonescript/visitor/variable.h
+  bonescript/src/bonescript/visitor/variable.c
+  bonescript/src/bonescript/visitor/scope.h
+  bonescript/src/bonescript/visitor/scope.c
 )
 source_group("src/bonescript/visitor" FILES ${BONESCRIPT_SRC_VISITOR_FILES})
 
