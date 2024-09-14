@@ -37,6 +37,7 @@ static void test_parser() {
   char* code = load_file("code/test-parser.bs");
   bs_ast_t* ast = bs_parse_tokens(code);
   bs_ast_print(ast);
+  bs_ast_destroy(ast);
   free(code);
 }
 
