@@ -55,7 +55,7 @@ static void indent_push(indent_t* indent, bool last_child) {
   
   indent->buf[indent->index] = last_child ? 'e' : 'c';
   indent->index++;
-  if (indent->index> indent->size) {
+  if (indent->index >= indent->size) {
     indent->size++;
     indent->buf = realloc(indent->buf, indent->size);
   }
