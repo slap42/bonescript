@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+  #include <windows.h>
+#endif
+
 typedef struct {
   char* buf;
   size_t size;
@@ -25,12 +29,18 @@ static void indent_destroy(indent_t* indent) {
 }
 
 static void indent_print(indent_t* indent) {
+#ifdef _WIN32
+  SetConsoleOutputCP(CP_UTF8);
+#endif
   for (size_t i = 0; i < indent->index; ++i) {
     if (indent->buf[i] == 'c') printf("├");
     if (indent->buf[i] == 'e') printf("└");
     if (indent->buf[i] == 'p') printf("│");
     if (indent->buf[i] == ' ') printf(" ");
   }
+#ifdef _WIN32
+  SetConsoleOutputCP(CP_ACP);
+#endif
 }
 
 static void indent_push(indent_t* indent, bool last_child) {
@@ -99,7 +109,7 @@ static void bs_ast_print_compound(bs_ast_t* ast, indent_t* indent) {
 
 static void bs_ast_print_function_call(bs_ast_t* ast, indent_t* indent) {
   printf("<function call>\n");
-  indent_push(indent, ast->function_call.args_count == 0);
+  indent_push(indent, false);
     indent_print(indent);
     printf("name: %.*s\n", (int)ast->function_call.name_length, ast->function_call.name);
   indent_pop(indent);
