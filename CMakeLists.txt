@@ -24,6 +24,8 @@ source_group("src/bonescript/lexer" FILES ${BONESCRIPT_SRC_LEXER_FILES})
 set(BONESCRIPT_SRC_AST_FILES
   bonescript/src/bonescript/ast/ast.h
   bonescript/src/bonescript/ast/ast.c
+  bonescript/src/bonescript/ast/print_ast.h
+  bonescript/src/bonescript/ast/print_ast.c
   bonescript/src/bonescript/ast/parser.h
   bonescript/src/bonescript/ast/parser.c
 )
@@ -64,6 +66,8 @@ set_source_files_properties(${BONESCRIPT_TESTS_CODE_FILES} PROPERTIES HEADER_FIL
 add_executable(bonescript-tests ${BONESCRIPT_TESTS_FILES} ${BONESCRIPT_TESTS_CODE_FILES})
 target_link_libraries(bonescript-tests PRIVATE bonescript)
 target_include_directories(bonescript-tests PRIVATE bonescript/src)
-if(WIN32)
+if(APPLE)
+  set_target_properties(bonescript-tests PROPERTIES XCODE_GENERATE_SCHEME TRUE XCODE_SCHEME_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bonescript-tests")
+elseif(WIN32)
   set_target_properties(bonescript-tests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bonescript-tests")
 endif()

@@ -1,6 +1,8 @@
 #ifndef BONESCRIPT_TOKEN_H_
 #define BONESCRIPT_TOKEN_H_
 
+#include <stddef.h>
+
 typedef struct BS_TOKEN_STRUCT {
 
   enum BS_TOKEN_TYPE {

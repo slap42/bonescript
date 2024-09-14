@@ -19,17 +19,17 @@ static void bs_parser_eat(bs_parser_t* parser, enum BS_TOKEN_TYPE type) {
   }
 }
 
-static bs_ast_t* bs_parse_string(bs_parser_t* parser) {
-  bs_ast_t* ast = bs_ast_create(BS_AST_STRING);
-  ast->string.value = parser->current_token->value;
-  ast->string.value_length = parser->current_token->length;
+static bs_ast_t* bs_parse_string_literal(bs_parser_t* parser) {
+  bs_ast_t* ast = bs_ast_create(BS_AST_STRING_LITERAL);
+  ast->string_literal.value = parser->current_token->value;
+  ast->string_literal.value_length = parser->current_token->length;
   bs_parser_eat(parser, BS_TOKEN_STRING);
   return ast;
 }
 
 static bs_ast_t* bs_parse_expression(bs_parser_t* parser) {
   switch (parser->current_token->type) {
-    case BS_TOKEN_STRING: return bs_parse_string(parser);
+    case BS_TOKEN_STRING: return bs_parse_string_literal(parser);
     default: {
       bs_error_invoke_callback(BS_ERROR_UNEXPECTED_TOKEN, "Unrecognized expression");
       return NULL;
@@ -37,14 +37,14 @@ static bs_ast_t* bs_parse_expression(bs_parser_t* parser) {
   }
 }
 
-static bs_ast_t* bs_parse_string_variable_definition(bs_parser_t* parser) {
-  bs_parser_eat(parser, BS_TOKEN_ID); // string
-  bs_ast_t* ast = bs_ast_create(BS_AST_STRING_VARIABLE_DEFINITION);
-  ast->string_variable_definition.name = parser->current_token->value;
-  ast->string_variable_definition.name_length = parser->current_token->length;
+static bs_ast_t* bs_parse_variable_definition(bs_parser_t* parser) {
+  bs_parser_eat(parser, BS_TOKEN_ID); // string, int, class name, etc
+  bs_ast_t* ast = bs_ast_create(BS_AST_VARIABLE_DEFINITION);
+  ast->variable_definition.name = parser->current_token->value;
+  ast->variable_definition.name_length = parser->current_token->length;
   bs_parser_eat(parser, BS_TOKEN_ID); // name
   bs_parser_eat(parser, BS_TOKEN_EQUAL); // =
-  ast->string_variable_definition.value = bs_parse_expression(parser);
+  ast->variable_definition.value = bs_parse_expression(parser);
   return ast;
 }
 
@@ -71,7 +71,7 @@ static bs_ast_t* bs_parse_variable(bs_parser_t* parser) {
 
 static bs_ast_t* bs_parse_id(bs_parser_t* parser) {  
   if (strncmp(parser->current_token->value, "string", parser->current_token->length) == 0) {
-    return bs_parse_string_variable_definition(parser);
+    return bs_parse_variable_definition(parser);
   }
   else {
     return bs_parse_variable(parser);
