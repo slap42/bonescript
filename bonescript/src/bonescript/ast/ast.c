@@ -9,5 +9,6 @@ bs_ast_t* bs_ast_create(int type) {
 }
 
 void bs_ast_destroy(bs_ast_t* ast) {
+  // TODO: This leaks memory - we need to free all children
   free(ast);
 }

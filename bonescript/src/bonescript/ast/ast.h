@@ -9,7 +9,7 @@ typedef struct BS_AST_STRUCT {
     BS_AST_COMPOUND,
     BS_AST_VARIABLE_DEFINITION,
     BS_AST_VARIABLE,
-    // BS_AST_FUNCTION_CALL,
+    BS_AST_FUNCTION_CALL,
     BS_AST_STRING_LITERAL,
   } type;
 
@@ -23,6 +23,8 @@ typedef struct BS_AST_STRUCT {
     struct {
       const char* name;
       size_t name_length;
+      const char* type;
+      size_t type_length;
       struct BS_AST_STRUCT* value;
     } variable_definition;
 
@@ -32,17 +34,17 @@ typedef struct BS_AST_STRUCT {
     } variable;
 
     struct {
-      const char* value;
-      size_t value_length;
-    } string_literal;
-
-/*
-    struct {
-      char* name;
+      const char* name;
+      size_t name_length;
       struct BS_AST_STRUCT** args;
       size_t args_count;
     } function_call;
-*/
+    
+    struct {
+      const char* value;
+      size_t value_length;
+    } string_literal;
+    
   };
 
 } bs_ast_t;

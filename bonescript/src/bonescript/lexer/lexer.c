@@ -187,15 +187,17 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
 
   // Single character tokens
   switch (lexer->ptr[0]) {
-    case '.': lexer->ptr++; return bs_token_create(BS_TOKEN_POINT,         lexer->ptr - 1, 1);
-    case ';': lexer->ptr++; return bs_token_create(BS_TOKEN_SEMICOLON,     lexer->ptr - 1, 1);
-    case '^': lexer->ptr++; return bs_token_create(BS_TOKEN_CARET,         lexer->ptr - 1, 1);
-    case '(': lexer->ptr++; return bs_token_create(BS_TOKEN_LPAREN,        lexer->ptr - 1, 1);
-    case ')': lexer->ptr++; return bs_token_create(BS_TOKEN_RPAREN,        lexer->ptr - 1, 1);
-    case '[': lexer->ptr++; return bs_token_create(BS_TOKEN_LSQBRACKET,    lexer->ptr - 1, 1);
-    case ']': lexer->ptr++; return bs_token_create(BS_TOKEN_RSQBRACKET,    lexer->ptr - 1, 1);
-    case '{': lexer->ptr++; return bs_token_create(BS_TOKEN_LCURLYBRACE,   lexer->ptr - 1, 1);
-    case '}': lexer->ptr++; return bs_token_create(BS_TOKEN_RCURLYBRACE,   lexer->ptr - 1, 1);
+    case '.': lexer->ptr++; return bs_token_create(BS_TOKEN_POINT,       lexer->ptr - 1, 1);
+    case ':': lexer->ptr++; return bs_token_create(BS_TOKEN_COLON,       lexer->ptr - 1, 1);
+    case ';': lexer->ptr++; return bs_token_create(BS_TOKEN_SEMICOLON,   lexer->ptr - 1, 1);
+    case ',': lexer->ptr++; return bs_token_create(BS_TOKEN_COMMA,       lexer->ptr - 1, 1);
+    case '^': lexer->ptr++; return bs_token_create(BS_TOKEN_CARET,       lexer->ptr - 1, 1);
+    case '(': lexer->ptr++; return bs_token_create(BS_TOKEN_LPAREN,      lexer->ptr - 1, 1);
+    case ')': lexer->ptr++; return bs_token_create(BS_TOKEN_RPAREN,      lexer->ptr - 1, 1);
+    case '[': lexer->ptr++; return bs_token_create(BS_TOKEN_LSQBRACKET,  lexer->ptr - 1, 1);
+    case ']': lexer->ptr++; return bs_token_create(BS_TOKEN_RSQBRACKET,  lexer->ptr - 1, 1);
+    case '{': lexer->ptr++; return bs_token_create(BS_TOKEN_LCURLYBRACE, lexer->ptr - 1, 1);
+    case '}': lexer->ptr++; return bs_token_create(BS_TOKEN_RCURLYBRACE, lexer->ptr - 1, 1);
   }
 
   // Multi character tokens
