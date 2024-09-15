@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "bonescript/error/error_internal.h"
 #include "bonescript/visitor/function.h"
 #include "bonescript/visitor/visitor.h"
 
@@ -16,6 +17,7 @@ static bs_variable_t* bs_std_print(bs_ast_t** args, size_t args_count, bs_scope_
       bs_variable_destroy(var);
     }
   }
+  printf("\n");
   return NULL;
 }
 

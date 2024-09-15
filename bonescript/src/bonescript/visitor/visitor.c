@@ -22,7 +22,11 @@ static bs_variable_t* bs_visit_variable_definition(bs_ast_t* ast, bs_scope_t* sc
 }
 
 static bs_variable_t* bs_visit_variable(bs_ast_t* ast, bs_scope_t* scope) {
-  return bs_scope_get_variable(scope, ast->variable.name, ast->variable.name_length);
+  bs_variable_t* var = bs_scope_get_variable(scope, ast->variable.name, ast->variable.name_length);
+  if (!var) {
+    bs_error_invoke_callback(BS_ERROR_RUNTIME_ERROR, "Undefined variable");
+  }
+  return var;
 }
 
 static bs_variable_t* bs_visit_function_call(bs_ast_t* ast, bs_scope_t* scope) {
@@ -42,6 +46,12 @@ static bs_variable_t* bs_visit_function_call(bs_ast_t* ast, bs_scope_t* scope) {
   // If it's not import, look it up in the variables table and call it
   else {
     bs_variable_t* func = bs_scope_get_variable(scope, ast->function_call.name, ast->function_call.name_length);
+    if (!func) {
+      bs_error_invoke_callback(BS_ERROR_RUNTIME_ERROR, "Undefined function");
+    }
+    else if (func->type != BS_VARIABLE_TYPE_FUNCTION) {
+      bs_error_invoke_callback(BS_ERROR_RUNTIME_ERROR, "Tried to call a variable that's not a function");
+    }
     bs_function_ptr_t f = (bs_function_ptr_t)func->data;
     return f(ast->function_call.args, ast->function_call.args_count, scope);
   }
