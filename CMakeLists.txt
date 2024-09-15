@@ -36,6 +36,9 @@ set(BONESCRIPT_SRC_VISITOR_FILES
   bonescript/src/bonescript/visitor/variable.c
   bonescript/src/bonescript/visitor/scope.h
   bonescript/src/bonescript/visitor/scope.c
+  bonescript/src/bonescript/visitor/import.h
+  bonescript/src/bonescript/visitor/import.c
+  bonescript/src/bonescript/visitor/function.h
 )
 source_group("src/bonescript/visitor" FILES ${BONESCRIPT_SRC_VISITOR_FILES})
 

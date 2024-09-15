@@ -26,7 +26,7 @@ static void test_lexer() {
   bs_lexer_t* lexer = bs_lexer_create(code);
   bs_token_t* token;
   while ((token = bs_lexer_next_token(lexer))) {
-    // printf("<%.*s>\n", (int)token->length, token->value);
+    printf("<%.*s>\n", (int)token->length, token->value);
     bs_token_destroy(token);
   }
   bs_lexer_destroy(lexer);
@@ -35,16 +35,20 @@ static void test_lexer() {
 }
 
 static void test_parser() {
-  char* code = load_file("code/test-parser.bs");
+  char* code = load_file("code/print.bs");
   bs_ast_t* ast = bs_parse_tokens(code);
-  // bs_ast_print(ast);
+  bs_ast_print(ast);
   bs_ast_destroy(ast);
   free(code);
 }
 
 static void test_visitor() {
-  char* code = load_file("code/test-parser.bs");
-  bs_run_interpreted(code);
+  char* code = load_file("code/print.bs");
+  bs_ast_t* ast = bs_parse_tokens(code);
+  bs_scope_t* scope = bs_scope_create();
+  bs_visit(ast, scope);
+  bs_scope_destroy(scope);
+  bs_ast_destroy(ast);
   free(code);
 }
 
@@ -55,7 +59,7 @@ static void error_callback(bs_error_t error_code, const char* error_string) {
 
 int main() {
   bs_error_set_callback(error_callback);
-  test_lexer();
+  // test_lexer();
   test_parser();
   test_visitor();
   return 0;

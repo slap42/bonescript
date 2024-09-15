@@ -1,2 +1,5 @@
-string name = "Charles Cheese";
-print(name);
+import('std-io');
+
+string name = 'Charles Cheese';
+
+print(name, 'Lemon');

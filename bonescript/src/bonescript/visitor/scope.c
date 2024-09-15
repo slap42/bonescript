@@ -18,11 +18,18 @@ void bs_scope_destroy(bs_scope_t* scope) {
   free(scope);
 }
 
-bs_variable_t bs_scope_get_variable(bs_scope_t* scope, const char* name) {
+void bs_scope_store_variable(bs_scope_t* scope, bs_variable_t* var) {
+  scope->variables_size++;
+  scope->variables = realloc(scope->variables, sizeof(bs_variable_t*) * scope->variables_size);
+  scope->variables[scope->variables_size - 1] = var;
+}
+
+bs_variable_t* bs_scope_get_variable(bs_scope_t* scope, const char* name, size_t name_length) {
   for (size_t i = 0; i < scope->variables_size; ++i) {
-    if (strcmp(name, scope->variables[i]->name) == 0) {
-      
+    if (strncmp(name, scope->variables[i]->name, name_length) == 0) {
+      return scope->variables[i];
     }
   }
   // TODO: Search next scope
+  return NULL;
 }
