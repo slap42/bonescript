@@ -23,10 +23,11 @@ static void bs_lexer_skip_whitespace(bs_lexer_t* lexer) {
 }
 
 static bs_token_t* bs_lexer_parse_string(bs_lexer_t* lexer) {
+  // TODO: Parsing strings that contain escape characters
   char string_delimiter = lexer->ptr[0];
   lexer->ptr++;
   bs_token_t* token = bs_token_create(BS_TOKEN_STRING, lexer->ptr, 0);
-  while (lexer->ptr[0] != string_delimiter && (lexer->ptr-1)[0] != '\\') {
+  while (lexer->ptr[0] != string_delimiter) {
     lexer->ptr++;
   };
   token->length = lexer->ptr - token->value;
