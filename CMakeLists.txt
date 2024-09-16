@@ -89,3 +89,12 @@ if(APPLE)
 elseif(WIN32)
   set_target_properties(bonescript-tests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bonescript-tests")
 endif()
+
+# bonescript-runtime
+set(BONESCRIPT_RUNTIME_FILES
+  bonescript-runtime/src/main.c
+)
+source_group("src" FILES ${BONESCRIPT_RUNTIME_FILES})
+
+add_executable(bonescript-runtime ${BONESCRIPT_RUNTIME_FILES})
+target_link_libraries(bonescript-runtime PRIVATE bonescript)

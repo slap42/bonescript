@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <bonescript/ast/parser.h>
+#include <bonescript/error.h>
 #include <bonescript/lexer/lexer.h>
 #include <bonescript/visitor/visitor.h>
 #include "utils/print_ast.h"
