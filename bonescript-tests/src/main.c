@@ -45,6 +45,7 @@ static void test_parser() {
 static void test_visitor() {
   char* code = load_file("code/print.bs");
   bs_ast_t* ast = bs_parse_tokens(code);
+  bs_ast_print(ast);
   bs_scope_t* scope = bs_scope_create();
   bs_visit(ast, scope);
   bs_scope_destroy(scope);
@@ -60,7 +61,7 @@ static void error_callback(bs_error_t error_code, const char* error_string) {
 int main() {
   bs_error_set_callback(error_callback);
   // test_lexer();
-  test_parser();
+  // test_parser();
   test_visitor();
   return 0;
 }
