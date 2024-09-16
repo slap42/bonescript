@@ -15,16 +15,16 @@ static bs_variable_t* bs_visit_compound(bs_ast_t* ast, bs_scope_t* scope) {
 }
 
 static bs_variable_t* bs_visit_variable_definition(bs_ast_t* ast, bs_scope_t* scope) {
-  bs_variable_t* var = bs_visit(ast->variable_definition.value, scope);
-  bs_variable_assign_name(var, ast->variable_definition.name, ast->variable_definition.name_length);
-  bs_scope_store_variable(scope, var);
-  return var;
+  bs_variable_t* value = bs_visit(ast->variable_definition.value, scope);
+  bs_variable_assign_name(value, ast->variable_definition.name, ast->variable_definition.name_length);
+  value = bs_scope_store_variable(scope, value);
+  return value;
 }
 
 static bs_variable_t* bs_visit_variable(bs_ast_t* ast, bs_scope_t* scope) {
   bs_variable_t* var = bs_scope_get_variable(scope, ast->variable.name, ast->variable.name_length);
   if (!var) {
-    BS_ERROR("Undefined variable\n");
+    BS_ERROR("Undefined variable: %.*s\n", (int)ast->variable.name_length, ast->variable.name);
   }
   return var;
 }

@@ -11,7 +11,7 @@ typedef struct BS_PARSER_STRUCT {
   bs_token_t* previous_token;
 } bs_parser_t;
 
-static void bs_parser_eat(bs_parser_t* parser, enum BS_TOKEN_TYPE type) {
+static void bs_parser_eat(bs_parser_t* parser, int type) {
   if (parser->current_token->type == type) {
     parser->previous_token = parser->current_token;
     parser->current_token = bs_lexer_next_token(parser->lexer);
@@ -60,13 +60,21 @@ static bs_ast_t* bs_parse_expression(bs_parser_t* parser) {
 
 static bs_ast_t* bs_parse_variable_definition(bs_parser_t* parser) {
   bs_ast_t* ast = bs_ast_create(BS_AST_VARIABLE_DEFINITION);
-  ast->variable_definition.type = parser->current_token->value;
-  ast->variable_definition.type_length = parser->current_token->length;
-  bs_parser_eat(parser, BS_TOKEN_ID); // string, int, class name, etc
+  ast->variable_definition.type = parser->previous_token->value;
+  ast->variable_definition.type_length = parser->previous_token->length;
   ast->variable_definition.name = parser->current_token->value;
   ast->variable_definition.name_length = parser->current_token->length;
-  bs_parser_eat(parser, BS_TOKEN_ID); // name
-  bs_parser_eat(parser, BS_TOKEN_EQUAL); // =
+  bs_parser_eat(parser, BS_TOKEN_ID);
+  bs_parser_eat(parser, BS_TOKEN_EQUAL);
+  ast->variable_definition.value = bs_parse_expression(parser);
+  return ast;
+}
+
+static bs_ast_t* bs_parse_variable_redefinition(bs_parser_t* parser) {
+  bs_ast_t* ast = bs_ast_create(BS_AST_VARIABLE_DEFINITION);
+  ast->variable_definition.name = parser->previous_token->value;
+  ast->variable_definition.name_length = parser->previous_token->length;
+  bs_parser_eat(parser, BS_TOKEN_EQUAL);
   ast->variable_definition.value = bs_parse_expression(parser);
   return ast;
 }
@@ -101,10 +109,8 @@ static bs_ast_t* bs_parse_function_call(bs_parser_t* parser) {
 }
 
 static bs_ast_t* bs_parse_variable(bs_parser_t* parser) {
-  const char* token_value = parser->current_token->value;
-  size_t token_length = parser->current_token->length;
-
-  bs_parser_eat(parser, BS_TOKEN_ID); // var name or function name
+  const char* token_value = parser->previous_token->value;
+  size_t token_length = parser->previous_token->length;
 
   // If we encounter a lparen, assume this is a function call
   if (parser->current_token->type == BS_TOKEN_LPAREN) {
@@ -118,13 +124,12 @@ static bs_ast_t* bs_parse_variable(bs_parser_t* parser) {
 }
 
 static bs_ast_t* bs_parse_id(bs_parser_t* parser) {  
-  if (strncmp(parser->current_token->value, "string", parser->current_token->length) == 0 ||
-      strncmp(parser->current_token->value, "int", parser->current_token->length) == 0 ||
-      strncmp(parser->current_token->value, "float", parser->current_token->length) == 0) {
-    return bs_parse_variable_definition(parser);
-  }
-  else {
-    return bs_parse_variable(parser);
+  bs_parser_eat(parser, BS_TOKEN_ID);
+
+  switch (parser->current_token->type) {
+    case BS_TOKEN_ID:    return bs_parse_variable_definition(parser);
+    case BS_TOKEN_EQUAL: return bs_parse_variable_redefinition(parser);
+    default:             return bs_parse_variable(parser);
   }
 }
 

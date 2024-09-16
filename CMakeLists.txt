@@ -81,9 +81,9 @@ add_executable(bonescript-tests ${BONESCRIPT_TESTS_FILES} ${BONESCRIPT_TESTS_UTI
 target_link_libraries(bonescript-tests PRIVATE bonescript)
 target_include_directories(bonescript-tests PRIVATE bonescript/src)
 if(APPLE)
-  set_target_properties(bonescript-tests PROPERTIES XCODE_GENERATE_SCHEME TRUE XCODE_SCHEME_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bonescript-tests")
+  set_target_properties(bonescript-tests PROPERTIES XCODE_GENERATE_SCHEME TRUE XCODE_SCHEME_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 elseif(WIN32)
-  set_target_properties(bonescript-tests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bonescript-tests")
+  set_target_properties(bonescript-tests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 endif()
 
 # bonescript-runtime

@@ -100,8 +100,10 @@ static void bs_ast_print_float_literal(bs_ast_t* ast, indent_t* indent) {
 static void bs_ast_print_variable_definition(bs_ast_t* ast, indent_t* indent) {
   printf("<variable definition>\n");
   indent_push(indent, false);
-    indent_print(indent);
-    printf("type: %.*s\n", (int)ast->variable_definition.type_length, ast->variable_definition.type);
+    if (ast->variable_definition.type) {
+      indent_print(indent);
+      printf("type: %.*s\n", (int)ast->variable_definition.type_length, ast->variable_definition.type);
+    }
     indent_print(indent);
     printf("name: %.*s\n", (int)ast->variable_definition.name_length, ast->variable_definition.name);
   indent_pop(indent);

@@ -12,7 +12,7 @@ typedef struct BS_SCOPE_STRUCT {
 
 bs_scope_t* bs_scope_create();
 void bs_scope_destroy(bs_scope_t* scope);
-void bs_scope_store_variable(bs_scope_t* scope, bs_variable_t* var);
+bs_variable_t* bs_scope_store_variable(bs_scope_t* scope, bs_variable_t* var);
 bs_variable_t* bs_scope_get_variable(bs_scope_t* scope, const char* name, size_t name_length);
 
 #endif

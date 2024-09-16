@@ -1,8 +1,9 @@
 import('std-io');
 
 string name = 'Charles Cheese';
-int age = 47;
-float percent = 0.59493;
+name = 'Greg Gertrude';
 
-print('My name is ', name, ' and I am ', age, ' years old, which makes me on average ',
-percent, ' percent of the way to death');
+int age = 1;
+age = 2;
+
+print('My name is ', name, ' and I am ', age);
