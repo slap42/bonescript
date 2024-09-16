@@ -49,11 +49,12 @@ static bs_variable_t* bs_visit_function_call(bs_ast_t* ast, bs_scope_t* scope) {
     if (!func) {
       bs_error_invoke_callback(BS_ERROR_RUNTIME_ERROR, "Undefined function");
     }
-    else if (func->type != BS_VARIABLE_TYPE_FUNCTION) {
-      bs_error_invoke_callback(BS_ERROR_RUNTIME_ERROR, "Tried to call a variable that's not a function");
+    else if (func->type == BS_VARIABLE_TYPE_BUILTIN_FUNCTION) {
+      bs_function_ptr_t f = (bs_function_ptr_t)func->data;
+      return f(ast->function_call.args, ast->function_call.args_count, scope);
     }
-    bs_function_ptr_t f = (bs_function_ptr_t)func->data;
-    return f(ast->function_call.args, ast->function_call.args_count, scope);
+    bs_error_invoke_callback(BS_ERROR_RUNTIME_ERROR, "Tried to call a variable that's not a function");
+    return NULL;
   }
 }
 

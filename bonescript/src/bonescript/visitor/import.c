@@ -24,7 +24,7 @@ static bs_variable_t* bs_std_print(bs_ast_t** args, size_t args_count, bs_scope_
 static void bs_import_std_io(bs_scope_t* scope) {
   // print
   const char* PRINT_FUNCTION_NAME = "print";
-  bs_variable_t* print = bs_variable_create(BS_VARIABLE_TYPE_FUNCTION);
+  bs_variable_t* print = bs_variable_create(BS_VARIABLE_TYPE_BUILTIN_FUNCTION);
   bs_variable_assign_name(print, PRINT_FUNCTION_NAME, strlen(PRINT_FUNCTION_NAME));
   print->data = (char*)bs_std_print;
   bs_scope_store_variable(scope, print);

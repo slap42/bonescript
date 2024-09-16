@@ -26,7 +26,7 @@ void bs_variable_destroy(bs_variable_t* var) {
   if (var->name) {
     free(var->name);
   }
-  if (var->type != BS_VARIABLE_TYPE_FUNCTION && var->data) {
+  if (var->type != BS_VARIABLE_TYPE_BUILTIN_FUNCTION && var->data) {
     free(var->data);
   }
   free(var);
