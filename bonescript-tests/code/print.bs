@@ -1,9 +1,9 @@
 import('std-io');
+import('std-math');
 
 string name = 'Charles Cheese';
 name = 'Greg Gertrude';
 
-int age = 1;
-age = 2;
+int age = add(1, 2);
 
 print('My name is ', name, ' and I am ', age);
