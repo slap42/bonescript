@@ -12,6 +12,7 @@ typedef struct BS_AST_STRUCT {
     BS_AST_FUNCTION_CALL,
     BS_AST_STRING_LITERAL,
     BS_AST_INT_LITERAL,
+    BS_AST_FLOAT_LITERAL,
   } type;
 
   union {
@@ -49,6 +50,10 @@ typedef struct BS_AST_STRUCT {
     struct {
       int value;
     } int_literal;
+
+    struct {
+      float value;
+    } float_literal;
     
   };
 

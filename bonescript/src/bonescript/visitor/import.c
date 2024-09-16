@@ -13,6 +13,7 @@ static bs_variable_t* bs_std_print(bs_ast_t** args, size_t args_count, bs_scope_
     switch (var->type) {
       case BS_VARIABLE_TYPE_STRING: printf("%s", (char*)var->data); break;
       case BS_VARIABLE_TYPE_INT:    printf("%d", *(int*)var->data); break;
+      case BS_VARIABLE_TYPE_FLOAT:  printf("%f", *(float*)var->data); break;
       default: BS_ERROR("Tried to print invalid variable type: %d", var->type); break;
     }
     if (!var->name) {

@@ -38,10 +38,18 @@ static bs_ast_t* bs_parse_int_literal(bs_parser_t* parser) {
   return ast;
 }
 
+static bs_ast_t* bs_parse_float_literal(bs_parser_t* parser) {
+  bs_ast_t* ast = bs_ast_create(BS_AST_FLOAT_LITERAL);
+  ast->float_literal.value = atof(parser->current_token->value);
+  bs_parser_eat(parser, BS_TOKEN_FLOAT);
+  return ast;
+}
+
 static bs_ast_t* bs_parse_expression(bs_parser_t* parser) {
   switch (parser->current_token->type) {
     case BS_TOKEN_ID:     return bs_parse_id(parser);
     case BS_TOKEN_INT:    return bs_parse_int_literal(parser);
+    case BS_TOKEN_FLOAT:  return bs_parse_float_literal(parser);
     case BS_TOKEN_STRING: return bs_parse_string_literal(parser);
     default: {
       BS_ERROR("Unrecognized expression %.*s", (int)parser->current_token->length, parser->current_token->value);
@@ -111,7 +119,8 @@ static bs_ast_t* bs_parse_variable(bs_parser_t* parser) {
 
 static bs_ast_t* bs_parse_id(bs_parser_t* parser) {  
   if (strncmp(parser->current_token->value, "string", parser->current_token->length) == 0 ||
-      strncmp(parser->current_token->value, "int", parser->current_token->length) == 0) {
+      strncmp(parser->current_token->value, "int", parser->current_token->length) == 0 ||
+      strncmp(parser->current_token->value, "float", parser->current_token->length) == 0) {
     return bs_parse_variable_definition(parser);
   }
   else {

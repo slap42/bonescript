@@ -89,6 +89,14 @@ static void bs_ast_print_int_literal(bs_ast_t* ast, indent_t* indent) {
   indent_pop(indent);
 }
 
+static void bs_ast_print_float_literal(bs_ast_t* ast, indent_t* indent) {
+  printf("<float literal>\n");
+  indent_push(indent, true);
+    indent_print(indent);
+    printf("value: %f\n", ast->float_literal.value);
+  indent_pop(indent);
+}
+
 static void bs_ast_print_variable_definition(bs_ast_t* ast, indent_t* indent) {
   printf("<variable definition>\n");
   indent_push(indent, false);
@@ -159,6 +167,7 @@ void bs_ast_print_node(bs_ast_t* ast, indent_t* indent) {
     case BS_AST_VARIABLE_DEFINITION: bs_ast_print_variable_definition(ast, indent); return;
     case BS_AST_STRING_LITERAL:      bs_ast_print_string_literal(ast, indent); return;
     case BS_AST_INT_LITERAL:         bs_ast_print_int_literal(ast, indent); return;
+    case BS_AST_FLOAT_LITERAL:       bs_ast_print_float_literal(ast, indent); return;
     case BS_AST_FUNCTION_CALL:       bs_ast_print_function_call(ast, indent); return;
     case BS_AST_VARIABLE:            bs_ast_print_variable(ast, indent); return;
   }

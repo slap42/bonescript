@@ -70,6 +70,12 @@ static bs_variable_t* bs_visit_int_literal(bs_ast_t* ast, bs_scope_t* scope) {
   return var;
 }
 
+static bs_variable_t* bs_visit_float_literal(bs_ast_t* ast, bs_scope_t* scope) {
+  bs_variable_t* var = bs_variable_create(BS_VARIABLE_TYPE_FLOAT);
+  bs_variable_assign_data(var, &ast->float_literal.value, sizeof(float));
+  return var;
+}
+
 bs_variable_t* bs_visit(bs_ast_t* ast, bs_scope_t* scope) {
   switch (ast->type) {
     case BS_AST_COMPOUND:            return bs_visit_compound(ast, scope);
@@ -78,6 +84,7 @@ bs_variable_t* bs_visit(bs_ast_t* ast, bs_scope_t* scope) {
     case BS_AST_FUNCTION_CALL:       return bs_visit_function_call(ast, scope);
     case BS_AST_STRING_LITERAL:      return bs_visit_string_literal(ast, scope);
     case BS_AST_INT_LITERAL:         return bs_visit_int_literal(ast, scope);
+    case BS_AST_FLOAT_LITERAL:       return bs_visit_float_literal(ast, scope);
   }
 
   BS_ERROR("Unexpected ast node type encountered\n");
