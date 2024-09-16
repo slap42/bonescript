@@ -1,0 +1,54 @@
+#ifndef BONESCRIPT_TOKEN_H_
+#define BONESCRIPT_TOKEN_H_
+
+#include <stddef.h>
+
+typedef struct BS_TOKEN_STRUCT {
+
+  enum BS_TOKEN_TYPE {
+    BS_TOKEN_ID,
+    BS_TOKEN_EQUAL,
+    BS_TOKEN_DOUBLEEQUAL,
+    BS_TOKEN_NOT,
+    BS_TOKEN_NOTEQUAL,
+    BS_TOKEN_PLUS,
+    BS_TOKEN_PLUSPLUS,
+    BS_TOKEN_PLUSEQUAL,
+    BS_TOKEN_MINUS,
+    BS_TOKEN_MINUSMINUS,
+    BS_TOKEN_MINUSEQUAL,
+    BS_TOKEN_MULTIPLY,
+    BS_TOKEN_MULTIPLYEQUAL,
+    BS_TOKEN_DIVIDE,
+    BS_TOKEN_DIVIDEEQUAL,
+    BS_TOKEN_MODULO,
+    BS_TOKEN_MODULOEQUAL,
+    BS_TOKEN_CARET,
+    BS_TOKEN_POINT,
+    BS_TOKEN_COLON,
+    BS_TOKEN_SEMICOLON,
+    BS_TOKEN_COMMA,
+    BS_TOKEN_LPAREN,
+    BS_TOKEN_RPAREN,
+    BS_TOKEN_LSQBRACKET,
+    BS_TOKEN_RSQBRACKET,
+    BS_TOKEN_LANGLEBRACKET,
+    BS_TOKEN_RANGLEBRACKET,
+    BS_TOKEN_LESSOREQUAL,
+    BS_TOKEN_GREATEROREQUAL,
+    BS_TOKEN_LCURLYBRACE,
+    BS_TOKEN_RCURLYBRACE,
+    BS_TOKEN_INT,
+    BS_TOKEN_FLOAT,
+    BS_TOKEN_STRING,
+  } type;
+
+  const char* value;
+  size_t length;
+
+} bs_token_t;
+
+bs_token_t* bs_token_create(int type, const char* value, unsigned int length);
+void bs_token_destroy(bs_token_t* token);
+
+#endif

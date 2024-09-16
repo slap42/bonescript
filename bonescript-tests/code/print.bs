@@ -1,0 +1,5 @@
+import('std-io');
+
+string name = 'Charles Cheese';
+
+print('My name is ', name);
