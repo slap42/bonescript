@@ -3,16 +3,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "bonescript/error/error_internal.h"
+#include "bonescript/error/error.h"
 #include "bonescript/visitor/function.h"
 #include "bonescript/visitor/visitor.h"
 
 static bs_variable_t* bs_std_print(bs_ast_t** args, size_t args_count, bs_scope_t* scope) {
   for (size_t i = 0; i < args_count; ++i) {
-    // TODO: Printing other stuff than strings.
-    // We currently just assume everything passed to print is a string
     bs_variable_t* var = bs_visit(args[i], scope);
-    printf("%s", var->data);
+    switch (var->type) {
+      case BS_VARIABLE_TYPE_STRING: printf("%s", (char*)var->data); break;
+      case BS_VARIABLE_TYPE_INT:    printf("%d", *(int*)var->data); break;
+      default: BS_ERROR("Tried to print invalid variable type: %d", var->type); break;
+    }
     if (!var->name) {
       bs_variable_destroy(var);
     }

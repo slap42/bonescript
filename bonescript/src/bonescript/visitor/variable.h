@@ -9,11 +9,12 @@ typedef struct BS_VARIABLE_STRUCT {
   enum BS_VARIABLE_TYPE_ENUM {
     BS_VARIABLE_TYPE_UNDEFINED,
     BS_VARIABLE_TYPE_STRING,
+    BS_VARIABLE_TYPE_INT,
     BS_VARIABLE_TYPE_BUILTIN_FUNCTION,
   } type;
   
   char* name;
-  char* data;
+  void* data;
   size_t data_size;
   
 } bs_variable_t;

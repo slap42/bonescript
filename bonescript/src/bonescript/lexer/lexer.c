@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "bonescript/error/error_internal.h"
+#include "bonescript/error/error.h"
 
 bs_lexer_t* bs_lexer_create(const char* code) {
   bs_lexer_t* lexer = malloc(sizeof(bs_lexer_t));
@@ -240,7 +240,7 @@ bs_token_t* bs_lexer_next_token(bs_lexer_t* lexer) {
   }
   // Handle unrecognized tokens
   else {
-    bs_error_invoke_callback(BS_ERROR_UNRECOGNIZED_TOKEN, "Unrecognized token");
+    BS_ERROR("Unrecognized token: %s\n", lexer->ptr);
     return NULL;
   }
 }

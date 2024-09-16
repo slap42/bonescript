@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <bonescript/ast/parser.h>
-#include <bonescript/error.h>
 #include <bonescript/lexer/lexer.h>
 #include <bonescript/visitor/visitor.h>
 #include "utils/print_ast.h"
@@ -21,13 +20,7 @@ static char* load_file(const char* path) {
   return buf;
 }
 
-static void error_callback(bs_error_t error_code, const char* error_string) {
-  fprintf(stderr, "Bonescript error: %s\n", error_string);
-  exit(1);
-}
-
 int main() {
-  bs_error_set_callback(error_callback);
   char* code = load_file("bonescript-tests/code/print.bs");
   bs_ast_t* ast = bs_parse_tokens(code);
   bs_ast_print(ast);

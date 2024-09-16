@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <bonescript/bonescript.h>
-#include <bonescript/error.h>
 
 static char* load_file(const char* path) {
   FILE* file = fopen(path, "rb");
@@ -16,11 +15,6 @@ static char* load_file(const char* path) {
   return buf;
 }
 
-static void error_callback(bs_error_t error_code, const char* error_string) {
-  fprintf(stderr, "Bonescript error: %s\n", error_string);
-  exit(1);
-}
-
 int main(int argc, char** argv) {
   if (argc < 2) {
     fprintf(stderr, "No input file");
@@ -33,7 +27,6 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  bs_error_set_callback(error_callback);
   int result = bs_execute(code);
   free(code);
   return result;

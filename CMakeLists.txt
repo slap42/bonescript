@@ -4,7 +4,6 @@ project(Bonescript)
 # bonescript
 set(BONESCRIPT_INCLUDE_FILES
   bonescript/include/bonescript/bonescript.h
-  bonescript/include/bonescript/error.h
 )
 source_group("include/bonescript" FILES ${BONESCRIPT_INCLUDE_FILES})
 
@@ -43,8 +42,7 @@ set(BONESCRIPT_SRC_VISITOR_FILES
 source_group("src/bonescript/visitor" FILES ${BONESCRIPT_SRC_VISITOR_FILES})
 
 set(BONESCRIPT_SRC_ERROR_FILES
-  bonescript/src/bonescript/error/error_internal.h
-  bonescript/src/bonescript/error/error.c
+  bonescript/src/bonescript/error/error.h
 )
 source_group("src/bonescript/error" FILES ${BONESCRIPT_SRC_ERROR_FILES})
 
@@ -75,8 +73,6 @@ source_group("src/utils" FILES ${BONESCRIPT_TESTS_UTILS_FILES})
 
 set(BONESCRIPT_TESTS_CODE_FILES
   bonescript-tests/code/print.bs
-  bonescript-tests/code/test-lexer.bs
-  bonescript-tests/code/test-parser.bs
 )
 source_group("code" FILES ${BONESCRIPT_TESTS_CODE_FILES})
 set_source_files_properties(${BONESCRIPT_TESTS_CODE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)

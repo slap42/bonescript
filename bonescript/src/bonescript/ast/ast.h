@@ -11,6 +11,7 @@ typedef struct BS_AST_STRUCT {
     BS_AST_VARIABLE,
     BS_AST_FUNCTION_CALL,
     BS_AST_STRING_LITERAL,
+    BS_AST_INT_LITERAL,
   } type;
 
   union {
@@ -44,6 +45,10 @@ typedef struct BS_AST_STRUCT {
       const char* value;
       size_t value_length;
     } string_literal;
+
+    struct {
+      int value;
+    } int_literal;
     
   };
 
